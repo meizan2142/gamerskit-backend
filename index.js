@@ -35,7 +35,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Gamerskit - Backend')
+    res.send('Gamerskit - Backend - Saif Sultan Mizan')
 })
 
 app.listen(port, () => {
