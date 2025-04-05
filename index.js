@@ -6,7 +6,7 @@ const app = express()
 require('dotenv').config()
 
 const corsOptions = {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', "https://cheery-chimera-b69472.netlify.app"],
     credentials: true,
     optionSuccessStatus: 200
 }
@@ -28,7 +28,231 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
+    // try {
+    //     // // collection
+    //     // const userCollection = client.db('supermacy').collection('newUser')
+    //     // const topEarnersCollection = client.db('supermacy').collection('topEarners')
+    //     // const taskCollection = client.db('supermacy').collection('tasks')
+    //     // const paymentInfoCollection = client.db('supermacy').collection('paymentInfo')
+    //     // const submissionsCollection = client.db('supermacy').collection('submissions')
+    //     // const withdrawCollection = client.db('supermacy').collection('withdraws')
+    //     // const sslCollection = client.db('supermacy').collection('ssl')
+    //     // // get data of users who are registered
+    //     // app.get('/newuser', async (req, res) => {
+    //     //     const result = await userCollection.find().toArray()
+    //     //     res.send(result)
+    //     // })
+    //     // app.get('/newuser/:email', async (req, res) => {
+    //     //     const email = req.params.email
+    //     //     const result = await userCollection.findOne({ email })
+    //     //     res.send(result)
+    //     // })
+    //     // app.get('/newuser/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     const result = await userCollection.findOne(query)
+    //     //     res.send(result)
+    //     // })
+    //     // // update a single user role
+    //     // app.put('/newuser/:email', async (req, res) => {
+    //     //     const email = req.params.email;
+    //     //     const user = req.body;
+    //     //     const query = { email };
+    //     //     console.log(user, query);
+    //     //     const updateRole = {
+    //     //         $set: {
+    //     //             role: user.selectedPerson.role,
+    //     //             coins: user.userCoins
+    //     //         },
+    //     //     };
+    //     //     const result = await userCollection.updateOne(query, updateRole)
+    //     //     res.send(result);
+    //     // })
+    //     // app.patch('/newuser/:email', async (req, res) => {
+    //     //     const email = req.params.email;
+    //     //     const user = req.body;
+    //     //     const query = { email };
+    //     //     console.log(user, query);
+    //     //     const updateCoins1 = {
+    //     //         $set: {
+    //     //             coins: user.reduced
+    //     //         },
+    //     //     };
+    //     //     const result1 = await userCollection.updateOne(query, updateCoins1)
+    //     //     res.send(result1);
+    //     // })
+    //     // // Delete a Single Task
+    //     // app.delete('/newuser/:email', async (req, res) => {
+    //     //     const email = req.params.email;
+    //     //     const query = { email: email }
+    //     //     console.log(query);
+    //     //     const result = await userCollection.deleteOne(query)
+    //     //     res.send(result)
+    //     // })
+    //     // // post data from client side(client side Registration)
+    //     // app.post('/newuser', async (req, res) => {
+    //     //     const newUsers = req.body;
+    //     //     const query = { email: newUsers.email }
+    //     //     const existingUser = await userCollection.findOne(query)
+    //     //     if (existingUser) {
+    //     //         return res.send({ message: 'User Already exists', insertedId: null })
+    //     //     }
+    //     //     const result = await userCollection.insertOne(newUsers);
+    //     //     res.send(result)
+    //     // });
+    //     // // show topEarner data on backend
+    //     // app.get('/topearners', async (req, res) => {
+    //     //     const result = await topEarnersCollection.find().toArray()
+    //     //     res.send(result)
+    //     // })
+    //     // // Payment Info
+    //     // app.get('/paymentinfo', async (req, res) => {
+    //     //     const result = await paymentInfoCollection.find().toArray()
+    //     //     res.send(result)
+    //     // })
+    //     // app.get('/paymentinfo/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     const result = await paymentInfoCollection.findOne(query)
+    //     //     res.send(result)
+    //     // })
+    //     // // Task collection
+    //     // app.get('/addedtasks', async (req, res) => {
+    //     //     const result = await taskCollection.find().toArray()
+    //     //     res.send(result)
+    //     // })
+    //     // // Storing all added task on mongodb
+    //     // app.post('/addedtasks', async (req, res) => {
+    //     //     const allTasks = req.body;
+    //     //     const result = await taskCollection.insertOne(allTasks);
+    //     //     res.send(result)
+    //     // });
+
+    //     // app.get('/addedtasks/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     const result = await taskCollection.findOne(query)
+    //     //     res.send(result)
+    //     // })
+
+    //     // // update single Task
+    //     // app.put('/addedtasks/:id', async (req, res) => {
+    //     //     console.log(req.params.id)
+    //     //     const query = { _id: new ObjectId(req.params.id) }
+    //     //     const data = {
+    //     //         $set: {
+    //     //             title: req.body.title,
+    //     //             detail: req.body.detail,
+    //     //             quantity: req.body.quantity
+    //     //         }
+    //     //     }
+    //     //     const result = await taskCollection.updateOne(query, data)
+    //     //     console.log(result);
+    //     //     res.send(result)
+    //     // })
+
+    //     // // Delete a Single Task
+    //     // app.delete('/addedtasks/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     console.log(query);
+    //     //     const result = await taskCollection.deleteOne(query)
+    //     //     res.send(result)
+    //     // })
+
+    //     // // Sumission Collection
+    //     // app.get('/submissions', async (req, res) => {
+    //     //     const page = parseInt(req.query.page)
+    //     //     const size = parseInt(req.query.size)
+    //     //     console.log(page, size, req.query);
+    //     //     // .skip(page * size).limit(size)
+
+    //     //     const result = await submissionsCollection.find().toArray()
+    //     //     res.send(result)
+    //     // })
+    //     // app.get('/submissionsCount', async (req, res) => {
+    //     //     const count = await submissionsCollection.estimatedDocumentCount()
+    //     //     res.send({ count })
+    //     // })
+    //     // app.get('/submissions/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     const result = await submissionsCollection.findOne(query)
+    //     //     res.send(result)
+    //     // })
+    //     // app.post('/submissions', async (req, res) => {
+    //     //     const allSubmissions = req.body;
+    //     //     const result = await submissionsCollection.insertOne(allSubmissions);
+    //     //     res.send(result)
+    //     // });
+    //     // // update a single submission's status
+    //     // app.put('/submissions/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const user = req.body;
+    //     //     console.log(id, user);
+    //     //     const query = { _id: new ObjectId(req.params.id) }
+    //     //     const data = {
+    //     //         $set: {
+    //     //             status: req.body.status
+    //     //         }
+    //     //     }
+    //     //     const result = await submissionsCollection.updateOne(query, data)
+    //     //     console.log(result);
+    //     //     res.send(result)
+    //     // })
+    //     // // WithDraws route
+
+    //     // app.get('/withdraws/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     const result = await withdrawCollection.findOne(query)
+    //     //     res.send(result)
+    //     // })
+    //     // // Delete a Single Withdraw
+    //     // app.delete('/withdraws/:id', async (req, res) => {
+    //     //     const id = req.params.id;
+    //     //     const query = { _id: new ObjectId(id) }
+    //     //     console.log(query);
+    //     //     const result = await withdrawCollection.deleteOne(query)
+    //     //     res.send(result)
+    //     // })
+
+    //     // // ssl routes
+
+    //     // app.get('/', async (req, res) => {
+    //     //     res.send('result')
+    //     // })
+    //     // app.post('/create-payment', async (req, res) => {
+    //     //     const paymentInfo = req.body;
+    //     //     console.log(paymentInfo);
+    //     //     res.send('result')
+    //     // })
+
+
+
+    //     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // }
     try {
+        // All collection of MongoDB
+        const cartListCollection = client.db('gamerskit').collection('cartList')
+
+        // All Backend routes start from here
+
+        // Add to cart list
+        app.get('/cartList', async (req, res) => {
+            try {
+                const result = await cartListCollection.find().toArray();
+                res.send(result || []); // Ensure an array is always returned
+            } catch (error) {
+                console.error('Failed to fetch cart items:', error);
+                res.status(500).send({ error: 'Internal server error' });
+            }
+        });
+        app.post('/cartList', async (req, res) => {
+            const allCartLists = req.body;
+            const result = await cartListCollection.insertOne(allCartLists);
+            res.send(result)
+        });
     }
     finally { }
 }
