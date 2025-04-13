@@ -240,14 +240,9 @@ async function run() {
 
         // Add to cart list
         app.get('/cartList', async (req, res) => {
-            try {
-                const result = await cartListCollection.find().toArray();
-                res.send(result || []); // Ensure an array is always returned
-            } catch (error) {
-                console.error('Failed to fetch cart items:', error);
-                res.status(500).send({ error: 'Internal server error' });
-            }
-        });
+            const result = await cartListCollection.find().toArray()
+            res.send(result)
+        })
         app.post('/cartList', async (req, res) => {
             const allCartLists = req.body;
             const result = await cartListCollection.insertOne(allCartLists);
