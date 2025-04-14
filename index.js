@@ -235,12 +235,17 @@ async function run() {
     try {
         // All collection of MongoDB
         const cartListCollection = client.db('gamerskit').collection('cartList')
-
+        const allProductsCollection = client.db('gamerskit').collection('allProducts')
+        
         // All Backend routes start from here
 
         // Add to cart list
         app.get('/cartList', async (req, res) => {
             const result = await cartListCollection.find().toArray()
+            res.send(result)
+        })
+        app.get('/allProducts', async (req, res) => {
+            const result = await allProductsCollection.find().toArray()
             res.send(result)
         })
         app.post('/cartList', async (req, res) => {
