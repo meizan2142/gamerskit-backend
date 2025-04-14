@@ -236,7 +236,7 @@ async function run() {
         // All collection of MongoDB
         const cartListCollection = client.db('gamerskit').collection('cartList')
         const allProductsCollection = client.db('gamerskit').collection('allProducts')
-        
+
         // All Backend routes start from here
 
         // Add to cart list
@@ -246,6 +246,13 @@ async function run() {
         })
         app.get('/allProducts', async (req, res) => {
             const result = await allProductsCollection.find().toArray()
+            res.send(result)
+        })
+        // Get single product
+        app.get('/allProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await allProductsCollection.findOne(query)
             res.send(result)
         })
         app.post('/cartList', async (req, res) => {
