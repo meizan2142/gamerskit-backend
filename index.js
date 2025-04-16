@@ -230,6 +230,7 @@ async function run() {
         // All collection of MongoDB
         const cartListCollection = client.db('gamerskit').collection('cartList')
         const allProductsCollection = client.db('gamerskit').collection('allProducts')
+        const orderDetailsCollection = client.db('gamerskit').collection('orderdetails')
 
         // All Backend routes start from here
 
@@ -242,6 +243,10 @@ async function run() {
             const result = await allProductsCollection.find().toArray()
             res.send(result)
         })
+        app.get('/orderdetails', async (req, res) => {
+            const result = await orderDetailsCollection.find().toArray()
+            res.send(result)
+        })
         // Get single product
         app.get('/allProducts/:id', async (req, res) => {
             const id = req.params.id;
@@ -252,6 +257,11 @@ async function run() {
         app.post('/cartList', async (req, res) => {
             const allCartLists = req.body;
             const result = await cartListCollection.insertOne(allCartLists);
+            res.send(result)
+        });
+        app.post('/orderdetails', async (req, res) => {
+            const allOrderDetails = req.body;
+            const result = await orderDetailsCollection.insertOne(allOrderDetails);
             res.send(result)
         });
         // Delete a single item
