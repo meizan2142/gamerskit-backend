@@ -209,13 +209,7 @@ async function run() {
     //     //     res.send(result)
     //     // })
     //     // // Delete a Single Withdraw
-    //     // app.delete('/withdraws/:id', async (req, res) => {
-    //     //     const id = req.params.id;
-    //     //     const query = { _id: new ObjectId(id) }
-    //     //     console.log(query);
-    //     //     const result = await withdrawCollection.deleteOne(query)
-    //     //     res.send(result)
-    //     // })
+
 
     //     // // ssl routes
 
@@ -260,6 +254,13 @@ async function run() {
             const result = await cartListCollection.insertOne(allCartLists);
             res.send(result)
         });
+        // Delete a single item
+        app.delete('/cartList/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await cartListCollection.deleteOne(query)
+            res.send(result)
+        })
     }
     finally { }
 }
