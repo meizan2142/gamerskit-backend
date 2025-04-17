@@ -254,6 +254,13 @@ async function run() {
             const result = await allProductsCollection.findOne(query)
             res.send(result)
         })
+        app.get('/orderdetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await orderDetailsCollection.findOne(query)
+            res.send(result)
+        })
+        
         app.post('/cartList', async (req, res) => {
             const allCartLists = req.body;
             const result = await cartListCollection.insertOne(allCartLists);
