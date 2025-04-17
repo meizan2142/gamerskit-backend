@@ -271,6 +271,18 @@ async function run() {
             const result = await cartListCollection.deleteOne(query)
             res.send(result)
         })
+        // After placing orders the cart will clear
+        app.delete('/clearCart', async (req, res) => {
+            try {
+                const result = await cartListCollection.deleteMany({});
+                res.status(200).json({
+                    success: true,
+                    deletedCount: result.deletedCount
+                });
+            } catch (error) {
+                res.status(500).json({ success: false, message: 'Failed to clear cart' });
+            }
+        });
     }
     finally { }
 }
