@@ -42,11 +42,6 @@ async function run() {
     //     //     const result = await userCollection.find().toArray()
     //     //     res.send(result)
     //     // })
-    //     // app.get('/newuser/:email', async (req, res) => {
-    //     //     const email = req.params.email
-    //     //     const result = await userCollection.findOne({ email })
-    //     //     res.send(result)
-    //     // })
     //     // app.get('/newuser/:id', async (req, res) => {
     //     //     const id = req.params.id;
     //     //     const query = { _id: new ObjectId(id) }
@@ -231,10 +226,20 @@ async function run() {
         const cartListCollection = client.db('gamerskit').collection('cartList')
         const allProductsCollection = client.db('gamerskit').collection('allProducts')
         const orderDetailsCollection = client.db('gamerskit').collection('orderdetails')
+        const usersCollection = client.db('gamerskit').collection('users')
 
         // All Backend routes start from here
 
         // Add to cart list
+        app.get('/users', async (req, res) => {
+            const result = await usersCollection.find().toArray()
+            res.send(result)
+        })
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email
+            const result = await usersCollection.findOne({ email })
+            res.send(result)
+        })
         app.get('/cartList', async (req, res) => {
             const result = await cartListCollection.find().toArray()
             res.send(result)
@@ -260,7 +265,17 @@ async function run() {
             const result = await orderDetailsCollection.findOne(query)
             res.send(result)
         })
-        
+
+        app.post('/users', async (req, res) => {
+            const newUsers = req.body;
+            const query = { email: newUsers.email }
+            const existingUser = await usersCollection.findOne(query)
+            if (existingUser) {
+                return res.send({ message: 'User Already exists', insertedId: null })
+            }
+            const result = await usersCollection.insertOne(newUsers);
+            res.send(result)
+        });
         app.post('/cartList', async (req, res) => {
             const allCartLists = req.body;
             const result = await cartListCollection.insertOne(allCartLists);
