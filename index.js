@@ -293,6 +293,12 @@ async function run() {
             const result = await cartListCollection.deleteOne(query)
             res.send(result)
         })
+        app.delete('/orderdetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await orderDetailsCollection.deleteOne(query)
+            res.send(result)
+        })
         // After placing orders the cart will clear
         app.delete('/clearCart', async (req, res) => {
             try {
