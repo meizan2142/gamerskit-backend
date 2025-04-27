@@ -6,25 +6,25 @@ const app = express()
 require('dotenv').config()
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://cheery-chimera-b69472.netlify.app',
-  'https://gamerskitbd.com', // Make sure to use HTTPS here
-  'https://www.gamerskitbd.com' // Include www version if needed
+    'http://localhost:5173',
+    'https://cheery-chimera-b69472.netlify.app',
+    'https://gamerskitbd.com',
+    'https://www.gamerskitbd.com'
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
