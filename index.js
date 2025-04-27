@@ -6,7 +6,7 @@ const app = express()
 require('dotenv').config()
 
 const corsOptions = {
-    origin: ['http://localhost:5173', "https://cheery-chimera-b69472.netlify.app"],
+    origin: ['http://localhost:5173', 'https://cheery-chimera-b69472.netlify.app', 'http://gamerskitbd.com', '*'],
     credentials: true,
     optionSuccessStatus: 200
 }
