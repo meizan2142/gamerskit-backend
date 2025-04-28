@@ -134,6 +134,16 @@ async function run() {
                 res.status(500).json({ success: false, message: 'Failed to clear cart' });
             }
         });
+
+        const { ObjectId } = require('mongodb'); // Make sure to import ObjectId
+
+        app.patch('/orderdetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const update = { $set: { status: req.body.status } };
+            const result = await orderDetailsCollection.updateOne(query, update);
+            res.send(result);
+        });
     }
     finally { }
 }
