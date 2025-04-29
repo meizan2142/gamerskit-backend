@@ -5,30 +5,19 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 require('dotenv').config()
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://cheery-chimera-b69472.netlify.app',
-    'https://gamerskitbd.com',
-    'https://www.gamerskitbd.com'
-];
-
 const corsOptions = {
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: ['http://localhost:5173',
+        'https://cheery-chimera-b69472.netlify.app',
+        'https://gamerskitbd.com',
+        'https://www.gamerskitbd.com'
+    ],
     credentials: true,
-    optionsSuccessStatus: 200
-};
+    optionSuccessStatus: 200
+}
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 app.use(express.json())
+
 
 
 
