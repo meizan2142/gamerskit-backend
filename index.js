@@ -8,8 +8,7 @@ require('dotenv').config()
 const corsOptions = {
     origin: ['http://localhost:5173',
         'https://cheery-chimera-b69472.netlify.app',
-        'https://gamerskitbd.com',
-        'https://www.gamerskitbd.com'
+        'https://gamerskitbd.com'
     ],
     credentials: true,
     optionSuccessStatus: 200
