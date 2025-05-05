@@ -36,6 +36,7 @@ async function run() {
         // All collection of MongoDB
         const cartListCollection = client.db('gamerskit').collection('cartList')
         const allProductsCollection = client.db('gamerskit').collection('allProducts')
+        const addedProductsCollection = client.db('gamerskit').collection('addedProducts')
         const orderDetailsCollection = client.db('gamerskit').collection('orderdetails')
         const usersCollection = client.db('gamerskit').collection('users')
 
@@ -55,8 +56,8 @@ async function run() {
             const result = await cartListCollection.find().toArray()
             res.send(result)
         })
-        app.get('/allProducts', async (req, res) => {
-            const result = await allProductsCollection.find().toArray()
+        app.get('/addedProducts', async (req, res) => {
+            const result = await addedProductsCollection.find().toArray()
             res.send(result)
         })
         app.get('/orderdetails', async (req, res) => {
@@ -64,10 +65,10 @@ async function run() {
             res.send(result)
         })
         // Get single product
-        app.get('/allProducts/:id', async (req, res) => {
+        app.get('/addedProducts/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
-            const result = await allProductsCollection.findOne(query)
+            const result = await addedProductsCollection.findOne(query)
             res.send(result)
         })
         app.get('/orderdetails/:id', async (req, res) => {
@@ -85,6 +86,11 @@ async function run() {
                 return res.send({ message: 'User Already exists', insertedId: null })
             }
             const result = await usersCollection.insertOne(newUsers);
+            res.send(result)
+        });
+        app.post('/addedProducts', async (req, res) => {
+            const addedProducts = req.body;
+            const result = await addedProductsCollection.insertOne(addedProducts);
             res.send(result)
         });
         app.post('/cartList', async (req, res) => {
