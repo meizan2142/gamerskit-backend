@@ -35,7 +35,6 @@ async function run() {
     try {
         // All collection of MongoDB
         const cartListCollection = client.db('gamerskit').collection('cartList')
-        const allProductsCollection = client.db('gamerskit').collection('allProducts')
         const addedProductsCollection = client.db('gamerskit').collection('addedProducts')
         const orderDetailsCollection = client.db('gamerskit').collection('orderdetails')
         const usersCollection = client.db('gamerskit').collection('users')
