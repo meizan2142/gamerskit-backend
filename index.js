@@ -135,6 +135,25 @@ async function run() {
             const result = await orderDetailsCollection.updateOne(query, update);
             res.send(result);
         });
+        app.patch('/addedProducts/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const update = {
+                    $set: {
+                        totalSizes: req.body.openingStock,
+                        leftProducts: req.body.closingStock,
+                        sizes: req.body.sizeValues,
+                        modified: req.body.modified
+                    }
+                };
+                const result = await addedProductsCollection.updateOne(query, update);
+                res.send(result);
+            } catch (error) {
+                console.error('Error updating product:', error);
+                res.status(500).send({ error: 'Internal server error' });
+            }
+        });
     }
     finally { }
 }
