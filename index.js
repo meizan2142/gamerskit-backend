@@ -130,11 +130,19 @@ async function run() {
 
         app.patch('/orderdetails/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const update = { $set: { status: req.body.status } };
+            const query = { _id: new ObjectId(id) };
+
+            const updateFields = {
+                status: req.body.status,
+                updatedAt: req.body.updatedAt,
+            };
+
+            const update = { $set: updateFields };
+
             const result = await orderDetailsCollection.updateOne(query, update);
             res.send(result);
         });
+
         app.patch('/addedProducts/:id', async (req, res) => {
             try {
                 const id = req.params.id;
