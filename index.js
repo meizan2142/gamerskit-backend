@@ -20,7 +20,7 @@ app.use(express.json())
 
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.usv0l7z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://gamerskit:${process.env.DB_PASS}@cluster0.y27spqp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -34,7 +34,6 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // All collection of MongoDB
-        const cartListCollection = client.db('gamerskit').collection('cartList')
         const addedProductsCollection = client.db('gamerskit').collection('addedProducts')
         const orderDetailsCollection = client.db('gamerskit').collection('orderdetails')
         const usersCollection = client.db('gamerskit').collection('users')
@@ -49,10 +48,6 @@ async function run() {
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email
             const result = await usersCollection.findOne({ email })
-            res.send(result)
-        })
-        app.get('/cartList', async (req, res) => {
-            const result = await cartListCollection.find().toArray()
             res.send(result)
         })
         app.get('/addedProducts', async (req, res) => {
@@ -92,41 +87,17 @@ async function run() {
             const result = await addedProductsCollection.insertOne(addedProducts);
             res.send(result)
         });
-        app.post('/cartList', async (req, res) => {
-            const allCartLists = req.body;
-            const result = await cartListCollection.insertOne(allCartLists);
-            res.send(result)
-        });
         app.post('/orderdetails', async (req, res) => {
             const allOrderDetails = req.body;
             const result = await orderDetailsCollection.insertOne(allOrderDetails);
             res.send(result)
         });
-        // Delete a single item
-        app.delete('/cartList/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await cartListCollection.deleteOne(query)
-            res.send(result)
-        })
         app.delete('/orderdetails/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await orderDetailsCollection.deleteOne(query)
             res.send(result)
         })
-        // After placing orders the cart will clear
-        app.delete('/clearCart', async (req, res) => {
-            try {
-                const result = await cartListCollection.deleteMany({});
-                res.status(200).json({
-                    success: true,
-                    deletedCount: result.deletedCount
-                });
-            } catch (error) {
-                res.status(500).json({ success: false, message: 'Failed to clear cart' });
-            }
-        });
 
         app.patch('/orderdetails/:id', async (req, res) => {
             const id = req.params.id;
