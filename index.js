@@ -142,6 +142,40 @@ async function run() {
             const result = await orderDetailsCollection.updateOne(query, update);
             res.send(result);
         });
+        app.put('/orderdetails/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const updateData = req.body; // This contains the updated order data
+
+                // Validate the ID
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).json({ error: 'Invalid order ID' });
+                }
+
+                // Validate the update data (basic example)
+                if (!updateData || Object.keys(updateData).length === 0) {
+                    return res.status(400).json({ error: 'No update data provided' });
+                }
+
+                const query = { _id: new ObjectId(id) };
+                const update = { $set: updateData };
+
+                const result = await orderDetailsCollection.updateOne(query, update);
+
+                if (result.matchedCount === 0) {
+                    return res.status(404).json({ error: 'Order not found' });
+                }
+
+                res.json({
+                    success: true,
+                    message: 'Order updated successfully',
+                    result
+                });
+            } catch (error) {
+                console.error('Error updating order:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        });
 
         app.patch('/addedProducts/:id', async (req, res) => {
             try {
