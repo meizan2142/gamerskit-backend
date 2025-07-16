@@ -59,6 +59,28 @@ async function run() {
             const result = await addedProductsCollection.find().toArray()
             res.send(result)
         })
+        // Run this once in your backend
+        app.get('/generate-slugs', async (req, res) => {
+            const products = await addedProductsCollection.find().toArray();
+
+            const updates = products.map(product => {
+                const slug = product.title.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w-]+/g, '');
+
+                return addedProductsCollection.updateOne(
+                    { _id: product._id },
+                    { $set: { slug } }
+                );
+            });
+
+            await Promise.all(updates);
+
+            // Create unique index to prevent duplicate slugs
+            await addedProductsCollection.createIndex({ slug: 1 }, { unique: true });
+
+            res.send('Slugs generated successfully');
+        });
         app.get('/orderdetails', async (req, res) => {
             const result = await orderDetailsCollection.find().toArray()
             res.send(result)
@@ -70,6 +92,26 @@ async function run() {
             const result = await addedProductsCollection.findOne(query)
             res.send(result)
         })
+        // Add this to your server.js (Express backend)
+        app.get('/products/:category/:slug', async (req, res) => {
+            try {
+                const { category, slug } = req.params;
+
+                const product = await addedProductsCollection.findOne({
+                    category: category,
+                    slug: slug
+                });
+
+                if (!product) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+
+                res.json(product);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            }
+        });
         app.get('/orderdetails/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
