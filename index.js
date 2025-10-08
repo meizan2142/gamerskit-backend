@@ -96,36 +96,110 @@ async function run() {
       res.send(result);
     });
     // Add this to your server.js (Express backend)
-function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/\s+/g, "-")        // spaces → hyphens
-    .replace(/[^\w-]+/g, "");    // remove non-alphanumeric except hyphen
-}
+    function slugify(title) {
+      return title
+        .toLowerCase()
+        .replace(/\s+/g, "-") // spaces → hyphens
+        .replace(/[^\w-]+/g, ""); // remove non-alphanumeric except hyphen
+    }
 
-app.get('/products/:slug', async (req, res) => {
-  try {
-    const slug = req.params.slug.toLowerCase(); // ensure lowercase
-    const products = await addedProductsCollection.find().toArray(); // get all products
+    app.get("/products/:slug", async (req, res) => {
+      try {
+        const slug = req.params.slug.toLowerCase(); // ensure lowercase
+        const products = await addedProductsCollection.find().toArray(); // get all products
 
-    // Find product whose slugified title matches the URL slug
-    const product = products.find(p => slugify(p.title) === slug);
+        // Find product whose slugified title matches the URL slug
+        const product = products.find((p) => slugify(p.title) === slug);
 
-    if (!product) return res.status(404).json({ error: 'Product not found' });
+        if (!product)
+          return res.status(404).json({ error: "Product not found" });
 
-    res.json(product);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
+        res.json(product);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
 
     app.get("/orderdetails/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await orderDetailsCollection.findOne(query);
       res.send(result);
+    });
+
+    app.patch("/products/updateStock/:id", async (req, res) => {
+      try {
+        const productId = req.params.id;
+        const { action, quantity = 1, size } = req.body;
+        const q = parseInt(quantity);
+
+        // Find product
+        const filter = { _id: new ObjectId(productId) };
+        const product = await addedProductsCollection.findOne(filter);
+
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Ensure damage field exists
+        if (product.damage === undefined) product.damage = 0;
+
+        // Prepare update object
+        let updateDoc = {};
+
+        // 1️⃣ Update main stock
+        if (action === "delivered") {
+          const newStock = Math.max(0, (product.leftProducts || 0) - q);
+          updateDoc.$set = { leftProducts: newStock };
+        } else if (action === "return-restock") {
+          updateDoc.$inc = { leftProducts: q };
+        } else if (action === "return-damage") {
+          updateDoc.$inc = { damage: q };
+        }
+
+        // 2️⃣ Update size-specific stock if size exists
+        if (size && product.sizes) {
+          const currentSizeStock = parseInt(product.sizes[size]) || 0;
+          let newSizeStock;
+
+          if (action === "delivered") {
+            newSizeStock = Math.max(0, currentSizeStock - q);
+          } else if (action === "return-restock") {
+            newSizeStock = currentSizeStock + q;
+          }
+
+          if (newSizeStock !== undefined) {
+            updateDoc.$set = {
+              ...(updateDoc.$set || {}),
+              [`sizes.${size}`]: newSizeStock,
+            };
+          }
+        }
+
+        // 3️⃣ Always update modified date
+        updateDoc.$set = {
+          ...(updateDoc.$set || {}),
+          modified: new Date().toLocaleDateString("en-US"),
+        };
+
+        // 4️⃣ Update product in database
+        const result = await addedProductsCollection.updateOne(
+          filter,
+          updateDoc
+        );
+
+        res.json({
+          success: true,
+          message: `Product stock updated successfully for action: ${action}${
+            size ? ` (size: ${size})` : ""
+          }`,
+          result,
+        });
+      } catch (error) {
+        console.error("❌ Error updating stock:", error);
+        res.status(500).json({ error: error.message });
+      }
     });
 
     app.post("/users", async (req, res) => {
